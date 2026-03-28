@@ -57,7 +57,7 @@ TEST_CASE("[Modules][LimboAI] BTPlayer basic functionality") {
 		Ref<BehaviorTree> bt = memnew(BehaviorTree);
 		bt_player->set_behavior_tree(bt);
 		CHECK(bt_player->get_behavior_tree() == bt);
-		CHECK(bt_player->get_bt_instance().is_null()); // not intantiated until scene root is ready
+		CHECK(bt_player->get_bt_instance().is_null()); // not instantiated until scene root is ready
 	}
 
 	SUBCASE("Null behavior tree handling") {

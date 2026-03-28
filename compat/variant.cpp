@@ -8,6 +8,10 @@
  * https://opensource.org/licenses/MIT.
  * =============================================================================
  */
+#if defined(ABILITY_SYSTEM_GDEXTENSION)
+#include <godot_cpp/classes/ref.hpp>
+#include <godot_cpp/classes/ref_counted.hpp>
+#endif // ABILITY_SYSTEM_GDEXTENSION
 #include "variant.h"
 
 #ifdef LIMBOAI_MODULE

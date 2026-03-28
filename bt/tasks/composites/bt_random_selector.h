@@ -20,7 +20,7 @@ class BTRandomSelector : public BTComposite {
 
 private:
 	int last_running_idx = 0;
-	Array indicies;
+	Array indices;
 
 protected:
 	static void _bind_methods() {}

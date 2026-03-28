@@ -43,7 +43,7 @@ TEST_CASE("[Modules][LimboAI] BTDynamicSelector") {
 		CHECK(task3->get_status() == BTTask::FRESH);
 
 		CHECK_ENTRIES_TICKS_EXITS(task1, 1, 1, 1); // * finished with FAILURE
-		CHECK_ENTRIES_TICKS_EXITS(task2, 1, 1, 0); // * enetered and running
+		CHECK_ENTRIES_TICKS_EXITS(task2, 1, 1, 0); // * entered and running
 		CHECK_ENTRIES_TICKS_EXITS(task3, 0, 0, 0); // * still fresh
 
 		SUBCASE("Subcase 1A: With no changes, first task is re-evaluated.") {

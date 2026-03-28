@@ -13,19 +13,19 @@
 
 void BTRandomSequence::_enter() {
 	last_running_idx = 0;
-	if (indicies.size() != get_child_count()) {
-		indicies.resize(get_child_count());
+	if (indices.size() != get_child_count()) {
+		indices.resize(get_child_count());
 		for (int i = 0; i < get_child_count(); i++) {
-			indicies[i] = i;
+			indices[i] = i;
 		}
 	}
-	indicies.shuffle();
+	indices.shuffle();
 }
 
 BT::Status BTRandomSequence::_tick(double p_delta) {
 	Status status = SUCCESS;
 	for (int i = last_running_idx; i < get_child_count(); i++) {
-		status = get_child(indicies[i])->execute(p_delta);
+		status = get_child(indices[i])->execute(p_delta);
 		if (status != SUCCESS) {
 			last_running_idx = i;
 			break;

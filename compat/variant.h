@@ -16,7 +16,7 @@
 #define VARIANT_EVALUATE(m_op, m_lvalue, m_rvalue, r_ret) r_ret = Variant::evaluate(m_op, m_lvalue, m_rvalue)
 #endif // LIMBOAI_MODULE
 
-#ifdef LIMBOAI_GDEXTENSION
+#if defined(LIMBOAI_GDEXTENSION) || defined(ABILITY_SYSTEM_GDEXTENSION)
 #include <godot_cpp/variant/variant.hpp>
 using namespace godot;
 

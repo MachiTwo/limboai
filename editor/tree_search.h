@@ -54,7 +54,7 @@ private:
 	Tree *tree_reference = nullptr;
 	// Linearized ordering of tree items.
 	Vector<TreeItem *> ordered_tree_items;
-	// Entires that match the search mask.
+	// Entries that match the search mask.
 	// TODO: Decide if this can be removed. It can be implicitly inferred from number_matches.
 	Vector<TreeItem *> matching_entries;
 	// Number of descendant matches for each tree item.
