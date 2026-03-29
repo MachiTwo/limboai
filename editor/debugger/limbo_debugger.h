@@ -63,7 +63,9 @@ public:
 	void register_bt_instance(uint64_t p_instance_id);
 	void unregister_bt_instance(uint64_t p_instance_id);
 	bool is_active() const;
-
+#else
+public:
+	_FORCE_INLINE_ bool is_active() const { return false; }
 #endif // ! DEBUG_ENABLED
 };
 #endif // LIMBO_DEBUGGER_H

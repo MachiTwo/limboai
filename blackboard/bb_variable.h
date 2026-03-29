@@ -14,6 +14,8 @@
 
 #ifdef LIMBOAI_MODULE
 #include "core/object/object.h"
+#include "core/templates/safe_refcount.h"
+#include "core/variant/variant.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION

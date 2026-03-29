@@ -13,6 +13,7 @@
 #define LIMBOAI_REGISTER_TYPES_H
 
 #ifdef LIMBOAI_MODULE
+#include "core/object/class_db.h"
 #include "modules/register_module_types.h"
 #endif // LIMBOAI_MODULE
 

@@ -157,7 +157,7 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 
 		LIMBO_REGISTER_TASK(BTComment);
 
-		GDREGISTER_CLASS(BTComposite);
+		GDREGISTER_ABSTRACT_CLASS(BTComposite);
 		LIMBO_REGISTER_TASK(BTSequence);
 		LIMBO_REGISTER_TASK(BTSelector);
 		LIMBO_REGISTER_TASK(BTParallel);
@@ -167,7 +167,7 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		LIMBO_REGISTER_TASK(BTRandomSequence);
 		LIMBO_REGISTER_TASK(BTRandomSelector);
 
-		GDREGISTER_CLASS(BTDecorator);
+		GDREGISTER_ABSTRACT_CLASS(BTDecorator);
 		LIMBO_REGISTER_TASK(BTInvert);
 		LIMBO_REGISTER_TASK(BTAlwaysFail);
 		LIMBO_REGISTER_TASK(BTAlwaysSucceed);
