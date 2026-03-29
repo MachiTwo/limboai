@@ -372,6 +372,7 @@ Dictionary LimboHSM::capture_state() const {
 
 void LimboHSM::restore_state(const Dictionary &p_dict) {
 	if (p_dict.has("blackboard") && get_blackboard().is_valid()) {
+		get_blackboard()->clear();
 		get_blackboard()->populate_from_dict(p_dict["blackboard"]);
 	}
 
@@ -390,5 +391,32 @@ void LimboHSM::restore_state(const Dictionary &p_dict) {
 			LimboHSM *sub_hsm = Object::cast_to<LimboHSM>(target);
 			sub_hsm->restore_state(p_dict["sub_hsm_state"]);
 		}
+	}
+}
+void LimboHSM::capture_tick(uint32_t p_tick) {
+	state_history[p_tick] = capture_state();
+
+	if (state_history.size() > (int)max_history) {
+		uint32_t oldest = p_tick - max_history;
+		if (state_history.has(oldest)) {
+			state_history.erase(oldest);
+		}
+	}
+}
+
+void LimboHSM::rollback_to_tick(uint32_t p_tick) {
+	if (state_history.has(p_tick)) {
+		restore_state(state_history[p_tick]);
+	}
+
+	// Clean up future history
+	Vector<uint32_t> to_remove;
+	for (const auto &E : state_history) {
+		if (E.key > p_tick) {
+			to_remove.push_back(E.key);
+		}
+	}
+	for (int i = 0; i < to_remove.size(); i++) {
+		state_history.erase(to_remove[i]);
 	}
 }

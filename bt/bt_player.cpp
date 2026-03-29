@@ -279,7 +279,14 @@ void BTPlayer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("capture_state"), &BTPlayer::capture_state);
 	ClassDB::bind_method(D_METHOD("restore_state", "state"), &BTPlayer::restore_state);
 
+	ClassDB::bind_method(D_METHOD("capture_tick", "tick"), &BTPlayer::capture_tick);
+	ClassDB::bind_method(D_METHOD("rollback_to_tick", "tick"), &BTPlayer::rollback_to_tick);
+	ClassDB::bind_method(D_METHOD("set_max_history", "max"), &BTPlayer::set_max_history);
+	ClassDB::bind_method(D_METHOD("get_max_history"), &BTPlayer::get_max_history);
+
 	ClassDB::bind_method(D_METHOD("_initialize_bt"), &BTPlayer::_initialize_bt);
+
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "max_history"), "set_max_history", "get_max_history");
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "behavior_tree", PROPERTY_HINT_RESOURCE_TYPE, "BehaviorTree"), "set_behavior_tree", "get_behavior_tree");
 	ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "agent_node"), "set_agent_node", "get_agent_node");
@@ -318,5 +325,32 @@ Dictionary BTPlayer::capture_state() const {
 void BTPlayer::restore_state(const Dictionary &p_dict) {
 	if (bt_instance.is_valid()) {
 		bt_instance->restore_state(p_dict);
+	}
+}
+void BTPlayer::capture_tick(uint32_t p_tick) {
+	state_history[p_tick] = capture_state();
+
+	if (state_history.size() > (int)max_history) {
+		uint32_t oldest = p_tick - max_history;
+		if (state_history.has(oldest)) {
+			state_history.erase(oldest);
+		}
+	}
+}
+
+void BTPlayer::rollback_to_tick(uint32_t p_tick) {
+	if (state_history.has(p_tick)) {
+		restore_state(state_history[p_tick]);
+	}
+
+	// Clean up future history
+	Vector<uint32_t> to_remove;
+	for (const auto &E : state_history) {
+		if (E.key > p_tick) {
+			to_remove.push_back(E.key);
+		}
+	}
+	for (int i = 0; i < (int)to_remove.size(); i++) {
+		state_history.erase(to_remove[i]);
 	}
 }

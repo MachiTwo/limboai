@@ -62,6 +62,8 @@ private:
 	bool is_initiating_update = false;
 
 	HashMap<TransitionKey, Transition, TransitionKeyHasher> transitions;
+	HashMap<uint32_t, Dictionary> state_history;
+	uint32_t max_history = 128;
 
 	void _get_transition(LimboState *p_from_state, const StringName &p_event, Transition &r_transition) const;
 	void _exit_if_not_inside_tree();
@@ -106,6 +108,12 @@ public:
 
 	Dictionary capture_state() const;
 	void restore_state(const Dictionary &p_dict);
+
+	void set_max_history(uint32_t p_max) { max_history = p_max; }
+	uint32_t get_max_history() const { return max_history; }
+
+	void capture_tick(uint32_t p_tick);
+	void rollback_to_tick(uint32_t p_tick);
 
 	LimboHSM();
 };

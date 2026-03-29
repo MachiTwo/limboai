@@ -206,6 +206,7 @@ void BTInstance::restore_state(const Dictionary &p_dict) {
 		last_status = (BT::Status)(int)p_dict["last_status"];
 	}
 	if (p_dict.has("blackboard") && get_blackboard().is_valid()) {
+		get_blackboard()->clear();
 		get_blackboard()->populate_from_dict(p_dict["blackboard"]);
 	}
 	if (p_dict.has("task_status") && p_dict.has("task_elapsed")) {
