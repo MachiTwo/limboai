@@ -61,6 +61,9 @@ public:
 
 	static Ref<BTInstance> create(Ref<BTTask> p_root_task, String p_source_bt_path, Node *p_owner_node);
 
+	Dictionary capture_state() const;
+	void restore_state(const Dictionary &p_dict);
+
 	BTInstance() = default;
 	~BTInstance();
 };

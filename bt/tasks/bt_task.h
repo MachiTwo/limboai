@@ -146,7 +146,9 @@ public:
 	_FORCE_INLINE_ bool is_root() const { return data.parent == nullptr; }
 	_FORCE_INLINE_ Ref<Blackboard> get_blackboard() const { return data.blackboard; }
 	_FORCE_INLINE_ Status get_status() const { return data.status; }
+	_FORCE_INLINE_ void set_status(Status p_status) { data.status = p_status; }
 	_FORCE_INLINE_ double get_elapsed_time() const { return data.elapsed; };
+	_FORCE_INLINE_ void set_elapsed_time(double p_elapsed) { data.elapsed = p_elapsed; };
 
 	_FORCE_INLINE_ Ref<BTTask> get_child(int p_idx) const {
 		ERR_FAIL_INDEX_V(p_idx, data.children.size(), nullptr);

@@ -93,6 +93,9 @@ public:
 
 	void set_scene_root_hint(Node *p_scene_root);
 
+	Dictionary capture_state() const;
+	void restore_state(const Dictionary &p_dict);
+
 	BTPlayer();
 	~BTPlayer();
 };

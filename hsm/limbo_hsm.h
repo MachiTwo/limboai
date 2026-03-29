@@ -104,6 +104,9 @@ public:
 
 	LimboState *anystate() const { return nullptr; }
 
+	Dictionary capture_state() const;
+	void restore_state(const Dictionary &p_dict);
+
 	LimboHSM();
 };
 

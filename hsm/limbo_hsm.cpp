@@ -329,6 +329,9 @@ void LimboHSM::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("initialize", "agent", "parent_scope"), &LimboHSM::initialize, Variant());
 	ClassDB::bind_method(D_METHOD("change_active_state", "state"), &LimboHSM::change_active_state);
 
+	ClassDB::bind_method(D_METHOD("capture_state"), &LimboHSM::capture_state);
+	ClassDB::bind_method(D_METHOD("restore_state", "state"), &LimboHSM::restore_state);
+
 	BIND_ENUM_CONSTANT(IDLE);
 	BIND_ENUM_CONSTANT(PHYSICS);
 	BIND_ENUM_CONSTANT(MANUAL);
@@ -348,4 +351,44 @@ LimboHSM::LimboHSM() {
 	previous_active = nullptr;
 	next_active = nullptr;
 	initial_state = nullptr;
+}
+Dictionary LimboHSM::capture_state() const {
+	Dictionary state;
+	if (active_state) {
+		state["active_state"] = get_path_to(active_state);
+		if (active_state->is_class("LimboHSM")) {
+			LimboHSM *sub_hsm = Object::cast_to<LimboHSM>(active_state);
+			state["sub_hsm_state"] = sub_hsm->capture_state();
+		}
+	}
+	
+	Ref<Blackboard> bb = get_blackboard();
+	if (bb.is_valid()) {
+		state["blackboard"] = bb->get_vars_as_dict();
+	}
+	
+	return state;
+}
+
+void LimboHSM::restore_state(const Dictionary &p_dict) {
+	if (p_dict.has("blackboard") && get_blackboard().is_valid()) {
+		get_blackboard()->populate_from_dict(p_dict["blackboard"]);
+	}
+
+	if (p_dict.has("active_state")) {
+		NodePath path = p_dict["active_state"];
+#if defined(LIMBOAI_GDEXTENSION) || defined(ABILITY_SYSTEM_GDEXTENSION)
+		LimboState *target = Object::cast_to<LimboState>(get_node<Node>(path));
+#else
+		LimboState *target = Object::cast_to<LimboState>(get_node(path));
+#endif
+		if (target && target != active_state) {
+			change_active_state(target);
+		}
+		
+		if (target && p_dict.has("sub_hsm_state") && target->is_class("LimboHSM")) {
+			LimboHSM *sub_hsm = Object::cast_to<LimboHSM>(target);
+			sub_hsm->restore_state(p_dict["sub_hsm_state"]);
+		}
+	}
 }

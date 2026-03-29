@@ -147,6 +147,9 @@ void BTInstance::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("register_with_debugger"), &BTInstance::register_with_debugger);
 	ClassDB::bind_method(D_METHOD("unregister_with_debugger"), &BTInstance::unregister_with_debugger);
 
+	ClassDB::bind_method(D_METHOD("capture_state"), &BTInstance::capture_state);
+	ClassDB::bind_method(D_METHOD("restore_state", "state"), &BTInstance::restore_state);
+
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "monitor_performance"), "set_monitor_performance", "get_monitor_performance");
 
 	ADD_SIGNAL(MethodInfo("updated", PropertyInfo(Variant::INT, "status")));
@@ -159,4 +162,54 @@ BTInstance::~BTInstance() {
 	_remove_custom_monitor();
 	unregister_with_debugger();
 #endif
+}
+
+void _capture_task_state(Ref<BTTask> p_task, Array &r_status_list, Array &r_elapsed_list) {
+	if (p_task.is_null()) return;
+	r_status_list.push_back((int)p_task->get_status());
+	r_elapsed_list.push_back((double)p_task->get_elapsed_time());
+	for (int i = 0; i < p_task->get_child_count(); i++) {
+		_capture_task_state(p_task->get_child(i), r_status_list, r_elapsed_list);
+	}
+}
+
+Dictionary BTInstance::capture_state() const {
+	Dictionary state;
+	state["last_status"] = (int)last_status;
+	
+	Ref<Blackboard> bb = get_blackboard();
+	if (bb.is_valid()) {
+		state["blackboard"] = bb->get_vars_as_dict();
+	}
+
+	Array status_list;
+	Array elapsed_list;
+	_capture_task_state(root_task, status_list, elapsed_list);
+	state["task_status"] = status_list;
+	state["task_elapsed"] = elapsed_list;
+
+	return state;
+}
+
+void _restore_task_state(Ref<BTTask> p_task, const Array &p_status_list, const Array &p_elapsed_list, int &r_index) {
+	if (p_task.is_null() || r_index >= p_status_list.size()) return;
+	p_task->set_status((BT::Status)(int)p_status_list[r_index]);
+	p_task->set_elapsed_time((double)p_elapsed_list[r_index]);
+	r_index++;
+	for (int i = 0; i < p_task->get_child_count(); i++) {
+		_restore_task_state(p_task->get_child(i), p_status_list, p_elapsed_list, r_index);
+	}
+}
+
+void BTInstance::restore_state(const Dictionary &p_dict) {
+	if (p_dict.has("last_status")) {
+		last_status = (BT::Status)(int)p_dict["last_status"];
+	}
+	if (p_dict.has("blackboard") && get_blackboard().is_valid()) {
+		get_blackboard()->populate_from_dict(p_dict["blackboard"]);
+	}
+	if (p_dict.has("task_status") && p_dict.has("task_elapsed")) {
+		int idx = 0;
+		_restore_task_state(root_task, p_dict["task_status"], p_dict["task_elapsed"], idx);
+	}
 }

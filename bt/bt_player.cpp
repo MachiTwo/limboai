@@ -276,6 +276,9 @@ void BTPlayer::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_scene_root_hint", "scene_root"), &BTPlayer::set_scene_root_hint);
 
+	ClassDB::bind_method(D_METHOD("capture_state"), &BTPlayer::capture_state);
+	ClassDB::bind_method(D_METHOD("restore_state", "state"), &BTPlayer::restore_state);
+
 	ClassDB::bind_method(D_METHOD("_initialize_bt"), &BTPlayer::_initialize_bt);
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "behavior_tree", PROPERTY_HINT_RESOURCE_TYPE, "BehaviorTree"), "set_behavior_tree", "get_behavior_tree");
@@ -303,4 +306,17 @@ BTPlayer::BTPlayer() {
 }
 
 BTPlayer::~BTPlayer() {
+}
+
+Dictionary BTPlayer::capture_state() const {
+	if (bt_instance.is_valid()) {
+		return bt_instance->capture_state();
+	}
+	return Dictionary();
+}
+
+void BTPlayer::restore_state(const Dictionary &p_dict) {
+	if (bt_instance.is_valid()) {
+		bt_instance->restore_state(p_dict);
+	}
 }
