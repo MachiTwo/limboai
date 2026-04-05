@@ -39,6 +39,7 @@
 #include "../compat/translation.h"
 #include "../util/limbo_string_names.h"
 
+#include <godot_cpp/classes/display_server.hpp>
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/input_event_key.hpp>
 #include <godot_cpp/classes/input_event_mouse_button.hpp>

@@ -18,6 +18,7 @@
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/engine.hpp>
+#include <godot_cpp/containers/vector.hpp>
 #endif // LIMBOAI_GDEXTENSION
 
 bool Blackboard::_set(const StringName &p_name, const Variant &p_value) {
